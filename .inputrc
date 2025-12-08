@@ -1,0 +1,25 @@
+$include /etc/inputrc
+
+# Coloured suggestions
+set colored-stats On
+# set colored-completion-prefix
+
+# Ignore case in completion
+set completion-ignore-case
+# set show-all-if-ambiguous On
+
+# Alternate ways to search the history
+"\e[5~": history-search-backward
+"\e[6~": history-search-forward
+
+# Windows/vim style completion
+# "\t": menu-complete
+# "\e[Z": menu-complete-backward
+
+# Custom Keyboard Shortcuts
+# "\C-h": "\C-a\C-ktp\C-m\C-u"
+
+# Follow symlinks
+set mark-symlinked-directories On
+
+# "\C-h": alias-expand-line

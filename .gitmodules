@@ -1,0 +1,4 @@
+[submodule "work"]
+	path = work
+	url = ssh://git@stash.mvtec.com:7999/~loesela/dotfiles.git
+	branch = main
