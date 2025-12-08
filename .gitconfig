@@ -1,0 +1,91 @@
+[rerere]
+	enabled = true
+
+[diff]
+	tool = vimdiff
+	algorithm = histogram
+	colorMoved = plain
+	mnemonicPrefix = true
+	renames = true
+
+[difftool]
+	prompt = false
+
+[merge]
+	tool = vimdiff
+
+[mergetool]
+	prompt = false
+
+[alias]
+	# Log
+	lg = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' -n 10
+	lga = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all
+	
+	# Status
+	s = status -uno
+	st = status
+	
+	# Branches
+	br = branch --list
+	brr = branch --list -r
+	sw = switch
+	co = checkout
+	
+	# Diff
+	df = diff
+	dfs = diff --staged
+	
+	# Commit
+	cm = commit -m
+	ca = commit --amend
+	fix = commit --fixup
+	
+	# Push/Pull
+	pf = push --force-with-lease
+	pl = pull
+	
+	# Rebase
+	rb = rebase -i --autosquash
+	
+	# Reset
+	uncommit = reset --soft HEAD~1
+	
+	# Changed files vs master
+	changed = diff --name-only origin/master...HEAD
+	
+	# Cleanup
+	clean-merged = "!git branch --merged master | grep -v 'master' | xargs -n 1 git branch -d"
+
+[column]
+	ui = auto
+
+[branch]
+	sort = -committerdate
+
+[tag]
+	sort = version:refname
+
+[init]
+	defaultBranch = master
+
+[fetch]
+	prune = true
+	pruneTags = true
+	all = true
+
+[help]
+	autocorrect = prompt
+
+[commit]
+	verbose = true
+
+[rebase]
+	updateRefs = true
+
+[submodule]
+	recurse = true
+
+# Include work config if present
+[include]
+	path = ~/.gitconfig.work

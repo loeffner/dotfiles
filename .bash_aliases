@@ -118,54 +118,52 @@ cf() {
 }
 
 ###############################################################################
-# git (these should be git aliases)
+# git (shell shortcuts - most aliases are in .gitconfig)
 ###############################################################################
 
-# Is it incredibly lazy that I don't want to type 'git'?
-alias s="git status -uno"
-alias status="git status"
-alias diff="git diff"
+# Shell shortcuts for common git commands (even shorter than git aliases)
+alias s="git s"
 alias lg="git lg"
-alias gitls="git branch --list"
-alias gitlsr="git branch --list -r | sed 's\origin/\\'"
 alias fetch="git fetch"
 alias pull="git pull"
+alias push="git push"
 alias add="git add -u"
 alias commit="git commit -m"
-alias push="git push"
 alias switch="git switch"
 alias checkout="git checkout"
-alias delbranch="git branch -D "
-alias delbranchclean="git branch | grep -v 'master$' | xargs -I {} git branch -d {} "
-alias delbranchcleanf="git branch | grep -v 'master$' | xargs -I {} git branch -D {} "
-alias delbranchremote="git push origin --delete "
 
-alias rebase="git rebase -i --autosquash"
+# Branch management
+alias gitls="git br"
+alias gitlsr="git brr | sed 's/origin\\///'"
+alias delbranch="git branch -D"
+alias delbranchclean="git branch | grep -v 'master$' | xargs -I {} git branch -d {}"
+alias delbranchcleanf="git branch | grep -v 'master$' | xargs -I {} git branch -D {}"
+alias delbranchremote="git push origin --delete"
+
+# These need shell features (functions with args, piping to code)
+alias rebase="git rb"
 
 force() {
-  git push --force-with-lease
+  git pf
 }
 
 fix() {
-  git commit --fixup="$1"
+  git fix "$1"
 }
 
 uncommit() {
-  git reset --soft HEAD~1 "$@"
+  git uncommit "$@"
 }
 
-# Print files that have been changed in comparison to master
+# Print files changed vs master (with completion)
 gitch() {
-  local branch_to_compare=$1
-  if [[ -z $branch_to_compare ]]; then
-    branch_to_compare="origin/master"
-  fi
+  local branch_to_compare=${1:-origin/master}
   git diff --name-only "$branch_to_compare"...HEAD
 }
 
 _gitch_completions() {
   local cur=${COMP_WORDS[COMP_CWORD]}
-  local branches=$(gitls)
+  local branches=$(git br)
   mapfile -t COMPREPLY < <(compgen -W "$branches" -- "$cur")
 }
 

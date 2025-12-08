@@ -25,6 +25,7 @@ declare -A SYMLINKS=(
   [".inputrc"]="$HOME/.inputrc"
   [".fzf.bash"]="$HOME/.fzf.bash"
   [".tmux.conf"]="$HOME/.tmux.conf"
+  [".gitconfig"]="$HOME/.gitconfig"
   ["git-completion.bash"]="$HOME/git-completion.bash"
 )
 
@@ -33,6 +34,7 @@ declare -A WORK_SYMLINKS=(
   [".work_bashrc"]="$HOME/.work_bashrc"
   [".bash_work_aliases"]="$HOME/.bash_work_aliases"
   [".bash_display"]="$HOME/.bash_display"
+  [".gitconfig.work"]="$HOME/.gitconfig.work"
 )
 
 # Work files to copy (from work/ submodule, skipped if not present)
