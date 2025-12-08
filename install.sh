@@ -1,9 +1,9 @@
 #!/bin/bash
 #
-# install.sh - Install dotfiles
+# install.sh - Install/uninstall dotfiles
 #
 # Creates symlinks from this repo to $HOME, backing up existing files.
-# Usage: ./install.sh [--force] [--no-backup]
+# Usage: ./install.sh [--force] [--no-backup] [--uninstall]
 #
 
 set -euo pipefail
@@ -14,7 +14,8 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WORK_DIR="$SCRIPT_DIR/work"
-BACKUP_DIR="$HOME/.dotfiles_backup/$(date +%Y%m%d_%H%M%S)"
+BACKUP_BASE="$HOME/.dotfiles_backup"
+BACKUP_DIR="$BACKUP_BASE/$(date +%Y%m%d_%H%M%S)"
 
 # Base files to symlink (always installed)
 declare -A SYMLINKS=(
@@ -48,6 +49,7 @@ declare -A WORK_COPIES=(
 
 FORCE=false
 NO_BACKUP=false
+UNINSTALL=false
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -59,6 +61,10 @@ while [[ $# -gt 0 ]]; do
       NO_BACKUP=true
       shift
       ;;
+    -u|--uninstall)
+      UNINSTALL=true
+      shift
+      ;;
     -h|--help)
       cat <<EOF
 Usage: $(basename "$0") [OPTIONS]
@@ -68,6 +74,7 @@ Install dotfiles by creating symlinks to \$HOME.
 Options:
   -f, --force     Overwrite existing files without prompting
   --no-backup     Don't create backups of existing files
+  -u, --uninstall Remove symlinks and restore last backup
   -h, --help      Show this help message
 
 Backup location: ~/.dotfiles_backup/<timestamp>/
@@ -101,6 +108,86 @@ log_error() {
   echo -e "\033[1;31m[ERROR]\033[0m $1" >&2
 }
 
+get_latest_backup() {
+  if [[ -d "$BACKUP_BASE" ]]; then
+    ls -1d "$BACKUP_BASE"/*/ 2>/dev/null | sort -r | head -n1
+  fi
+}
+
+remove_symlink() {
+  local target="$1"
+
+  if [[ -L "$target" ]]; then
+    rm -f "$target"
+    log_success "Removed symlink: $target"
+    return 0
+  elif [[ -e "$target" ]]; then
+    log_warning "Not a symlink, skipped: $target"
+    return 1
+  else
+    log_info "Does not exist: $target"
+    return 0
+  fi
+}
+
+restore_from_backup() {
+  local backup_dir="$1"
+  local target="$2"
+  local filename
+  filename="$(basename "$target")"
+  local backup_file="$backup_dir/$filename"
+
+  if [[ -f "$backup_file" ]]; then
+    cp -P "$backup_file" "$target"
+    log_success "Restored: $backup_file -> $target"
+    return 0
+  else
+    log_info "No backup found for: $filename"
+    return 1
+  fi
+}
+
+do_uninstall() {
+  echo "Uninstalling dotfiles..."
+  echo
+
+  local latest_backup
+  latest_backup="$(get_latest_backup)"
+
+  if [[ -n "$latest_backup" ]]; then
+    log_info "Found backup: $latest_backup"
+    echo
+  else
+    log_warning "No backup found in $BACKUP_BASE"
+    echo
+  fi
+
+  # Remove base symlinks
+  for target in "${SYMLINKS[@]}"; do
+    remove_symlink "$target"
+    if [[ -n "$latest_backup" ]]; then
+      restore_from_backup "$latest_backup" "$target"
+    fi
+  done
+
+  # Remove work symlinks
+  for target in "${WORK_SYMLINKS[@]}"; do
+    remove_symlink "$target"
+    if [[ -n "$latest_backup" ]]; then
+      restore_from_backup "$latest_backup" "$target"
+    fi
+  done
+
+  # Note: not restoring copied files (ssh_config) to avoid overwriting user changes
+
+  echo
+  log_success "Uninstall complete!"
+
+  if [[ -n "$latest_backup" ]]; then
+    log_info "Restored from: $latest_backup"
+  fi
+}
+
 backup_file() {
   local file="$1"
 
@@ -110,7 +197,8 @@ backup_file() {
 
   if [[ -e "$file" || -L "$file" ]]; then
     mkdir -p "$BACKUP_DIR"
-    local backup_path="$BACKUP_DIR/$(basename "$file")"
+    local backup_path
+    backup_path="$BACKUP_DIR/$(basename "$file")"
     cp -P "$file" "$backup_path"
     log_info "Backed up: $file -> $backup_path"
   fi
@@ -204,6 +292,11 @@ copy_file() {
 ###############################################################################
 # Main
 ###############################################################################
+
+if [[ "$UNINSTALL" == true ]]; then
+  do_uninstall
+  exit 0
+fi
 
 echo "Installing dotfiles..."
 echo "Source: $SCRIPT_DIR"
