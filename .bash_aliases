@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Source shared helpers (provides log_info, log_error, etc.)
+if [[ -n "$DOTFILES_DIR" && -f "$DOTFILES_DIR/lib/helpers.sh" ]]; then
+  source "$DOTFILES_DIR/lib/helpers.sh"
+fi
+
 ###############################################################################
 # ls, grep, rsync and find
 ###############################################################################
@@ -36,7 +41,7 @@ search() {
         maxdepth="-maxdepth $2"
         shift
       else
-        echo "Error: Missing or invalid value for -d | --maxdepth option." >&2
+        log_error "Missing or invalid value for -d | --maxdepth option."
         return 1
       fi
       ;;
@@ -61,7 +66,7 @@ search() {
   elif [[ $# -eq 1 ]]; then
     grep_pattern="$1"
   else
-    echo "Usage: search [-d maxdepth] [search_path] [find_pattern] grep_pattern"
+    log_error "Usage: search [-d maxdepth] [search_path] [find_pattern] grep_pattern"
     return 1
   fi
   # Print the 'find' command unless in silent mode
@@ -142,7 +147,7 @@ alias citch="code \$(gitch)"
 # Print information about the current environment.
 get() {
     if [ -z "$1" ]; then
-        echo "Usage: get <pattern>"
+        log_error "Usage: get <pattern>"
         return 1
     fi
     env | grep --color=auto "$1"
@@ -174,7 +179,7 @@ SSH_ENV="$HOME/.env/agent-environment-$HOSTNAME"
 
 # Start an ssh-agent and record the environment to a file
 start_agent() {
-  echo "Starting agent"
+  log_info "Starting ssh-agent..."
   /usr/bin/ssh-agent -t 8h >"${SSH_ENV}"
   chmod 600 "${SSH_ENV}"
   . "${SSH_ENV}" >/dev/null
@@ -197,9 +202,9 @@ check_agent() {
   if [ -f "${SSH_ENV}" ]; then
     . "${SSH_ENV}" >/dev/null
     ps -ef | grep "${SSH_AGENT_PID}" | grep ssh-agent >/dev/null || {
-      echo "Agent is not running, SSH_ENV is outdated."
+      log_warning "Agent is not running, SSH_ENV is outdated."
     }
-    echo "Agent with PID ${SSH_AGENT_PID} is running."
+    log_success "Agent with PID ${SSH_AGENT_PID} is running."
     echo
     ssh-add -l
     return 0
@@ -220,7 +225,7 @@ waitfor() {
     sleep 2
   done
 
-  echo -e "\nWorkstation ($host) is available!"
+  log_success "Workstation ($host) is available!"
 }
 
 _waitfor_completions() {

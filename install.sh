@@ -17,6 +17,9 @@ WORK_DIR="$SCRIPT_DIR/work"
 BACKUP_BASE="$HOME/.dotfiles_backup"
 BACKUP_DIR="$BACKUP_BASE/$(date +%Y%m%d_%H%M%S)"
 
+# Source shared helpers
+source "$SCRIPT_DIR/lib/helpers.sh"
+
 # Base files to symlink (always installed)
 declare -A SYMLINKS=(
   [".bashrc"]="$HOME/.bashrc"
@@ -82,7 +85,7 @@ EOF
       exit 0
       ;;
     *)
-      echo "Unknown option: $1" >&2
+      log_error "Unknown option: $1"
       exit 1
       ;;
   esac
@@ -91,22 +94,6 @@ done
 ###############################################################################
 # Helper Functions
 ###############################################################################
-
-log_info() {
-  echo -e "\033[1;34m[INFO]\033[0m $1"
-}
-
-log_success() {
-  echo -e "\033[1;32m[OK]\033[0m $1"
-}
-
-log_warning() {
-  echo -e "\033[1;33m[WARN]\033[0m $1"
-}
-
-log_error() {
-  echo -e "\033[1;31m[ERROR]\033[0m $1" >&2
-}
 
 get_latest_backup() {
   if [[ -d "$BACKUP_BASE" ]]; then
@@ -148,19 +135,17 @@ restore_from_backup() {
 }
 
 do_uninstall() {
-  echo "Uninstalling dotfiles..."
-  echo
+  log_info "Uninstalling dotfiles..."
 
   local latest_backup
   latest_backup="$(get_latest_backup)"
 
   if [[ -n "$latest_backup" ]]; then
     log_info "Found backup: $latest_backup"
-    echo
   else
     log_warning "No backup found in $BACKUP_BASE"
-    echo
   fi
+  echo
 
   # Remove base symlinks
   for target in "${SYMLINKS[@]}"; do
@@ -298,8 +283,7 @@ if [[ "$UNINSTALL" == true ]]; then
   exit 0
 fi
 
-echo "Installing dotfiles..."
-echo "Source: $SCRIPT_DIR"
+log_info "Installing dotfiles from $SCRIPT_DIR"
 echo
 
 # Create base symlinks
@@ -338,4 +322,4 @@ if [[ -d "$BACKUP_DIR" ]]; then
 fi
 
 echo
-echo "Run 'source ~/.bashrc' or start a new terminal to apply changes."
+log_info "Run 'source ~/.bashrc' or start a new terminal to apply changes."

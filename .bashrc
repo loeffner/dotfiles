@@ -156,11 +156,9 @@ alias code='code-insiders'
 # zoxide
 ###############################################################################
 
-# Fallback add_path_entry if work tools not loaded
-if ! command -v add_path_entry &> /dev/null; then
-  add_path_entry() {
-    [[ ":$PATH:" != *":$1:"* ]] && export PATH="$1:$PATH"
-  }
+# Source shared helpers if not already loaded (provides add_path_entry)
+if ! command -v add_path_entry &> /dev/null && [[ -n "$DOTFILES_DIR" ]]; then
+  source "$DOTFILES_DIR/lib/helpers.sh"
 fi
 
 add_path_entry "$HOME"/.local/bin
