@@ -293,7 +293,7 @@ for source in "${!SYMLINKS[@]}"; do
 done
 
 # Check if work submodule is present
-if [[ -d "$WORK_DIR" ]]; then
+if [[ -n "$(ls -A 'work' )" ]]; then
   echo
   log_info "Work submodule found, installing work files..."
 
