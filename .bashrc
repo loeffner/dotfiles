@@ -93,8 +93,9 @@ esac
 # colored GCC warnings and errors
 #export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
+
 ###############################################################################
-# Private and work bash tools
+# DOTFILES_DIR and bash prompt (may be overwritten by included files
 ###############################################################################
 
 # Detect dotfiles directory (where this .bashrc is symlinked from)
@@ -102,6 +103,17 @@ if [ -L "$HOME/.bashrc" ]; then
   DOTFILES_DIR="$(dirname "$(readlink -f "$HOME/.bashrc")")"
   export DOTFILES_DIR
 fi
+
+# Include git-prompt file
+if [ -f "$DOTFILES_DIR/git/git-prompt.sh" ]; then
+  . "$DOTFILES_DIR"/git/git-prompt.sh
+fi
+
+PROMPT_COMMAND='PS1_CMD1=$(__git_ps1 " (%s)")'; PS1='\[\e[32m\]♞\[\e[0m\] \[\e[94m\]\w\[\e[93m\]${PS1_CMD1}\n\[\e[32m\] ↳\[\e[0m\] \[\e[32m\]\$\[\e[0m\] '
+
+###############################################################################
+# Private and work bash tools
+###############################################################################
 
 # Personal Aliases (loaded first - defines SSH_ENV, start_agent, etc.)
 if [ -f $HOME/.bash_aliases ]; then
