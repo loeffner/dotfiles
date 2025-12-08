@@ -1,3 +1,7 @@
+[user]
+	name = Andreas Lösel
+	email = andreas.loesel@outlook.com
+
 [rerere]
 	enabled = true
 
@@ -21,39 +25,19 @@
 	# Log
 	lg = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' -n 10
 	lga = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all
-	
-	# Status
-	s = status -uno
-	st = status
-	
-	# Branches
-	br = branch --list
-	brr = branch --list -r
-	sw = switch
-	co = checkout
-	
-	# Diff
-	df = diff
-	dfs = diff --staged
-	
+
 	# Commit
-	cm = commit -m
-	ca = commit --amend
 	fix = commit --fixup
-	
+
 	# Push/Pull
-	pf = push --force-with-lease
-	pl = pull
-	
+	force = push --force-with-lease
+
 	# Rebase
-	rb = rebase -i --autosquash
-	
+	reb = rebase -i --autosquash
+
 	# Reset
 	uncommit = reset --soft HEAD~1
-	
-	# Changed files vs master
-	changed = diff --name-only origin/master...HEAD
-	
+
 	# Cleanup
 	clean-merged = "!git branch --merged master | grep -v 'master' | xargs -n 1 git branch -d"
 

@@ -118,52 +118,21 @@ cf() {
 }
 
 ###############################################################################
-# git (shell shortcuts - most aliases are in .gitconfig)
+# git (these should be git aliases)
 ###############################################################################
 
-# Shell shortcuts for common git commands (even shorter than git aliases)
-alias s="git s"
-alias lg="git lg"
-alias fetch="git fetch"
-alias pull="git pull"
-alias push="git push"
-alias add="git add -u"
-alias commit="git commit -m"
-alias switch="git switch"
-alias checkout="git checkout"
-
-# Branch management
-alias gitls="git br"
-alias gitlsr="git brr | sed 's/origin\\///'"
-alias delbranch="git branch -D"
-alias delbranchclean="git branch | grep -v 'master$' | xargs -I {} git branch -d {}"
-alias delbranchcleanf="git branch | grep -v 'master$' | xargs -I {} git branch -D {}"
-alias delbranchremote="git push origin --delete"
-
-# These need shell features (functions with args, piping to code)
-alias rebase="git rb"
-
-force() {
-  git pf
-}
-
-fix() {
-  git fix "$1"
-}
-
-uncommit() {
-  git uncommit "$@"
-}
-
-# Print files changed vs master (with completion)
+# Print files that have been changed in comparison to master
 gitch() {
-  local branch_to_compare=${1:-origin/master}
+  local branch_to_compare=$1
+  if [[ -z $branch_to_compare ]]; then
+    branch_to_compare="origin/master"
+  fi
   git diff --name-only "$branch_to_compare"...HEAD
 }
 
 _gitch_completions() {
   local cur=${COMP_WORDS[COMP_CWORD]}
-  local branches=$(git br)
+  local branches=$(git branch --list)
   mapfile -t COMPREPLY < <(compgen -W "$branches" -- "$cur")
 }
 
