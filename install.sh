@@ -28,7 +28,7 @@ declare -A SYMLINKS=(
   [".bash_logout"]="$HOME/.bash_logout"
   [".inputrc"]="$HOME/.inputrc"
   [".fzf.bash"]="$HOME/.fzf.bash"
-  [".tmux.conf"]="$HOME/.tmux.conf"
+  ["tmux/.tmux.conf"]="$HOME/.tmux.conf"
   [".gitconfig"]="$HOME/.gitconfig"
   ["git-completion.bash"]="$HOME/git-completion.bash"
 )
