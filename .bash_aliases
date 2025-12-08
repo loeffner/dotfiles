@@ -95,9 +95,6 @@ export CONFIG_HOME="$HOME/.config"
 alias bashrc="source $HOME/.bashrc"
 alias inputrc="bind -f $HOME/.inputrc"
 
-# Install dotfiles (wrapper for install.sh script)
-alias install_loesela_bash="$HOME/loesela_bash/install.sh"
-
 # Open often used files in vscode
 alias brc="code $HOME/.bashrc"
 alias wrc="code $HOME/.bashrc"

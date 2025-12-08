@@ -97,6 +97,12 @@ esac
 # Private and work bash tools
 ###############################################################################
 
+# Detect dotfiles directory (where this .bashrc is symlinked from)
+if [ -L "$HOME/.bashrc" ]; then
+  DOTFILES_DIR="$(dirname "$(readlink -f "$HOME/.bashrc")")"
+  export DOTFILES_DIR
+fi
+
 # Personal Aliases (loaded first - defines SSH_ENV, start_agent, etc.)
 if [ -f $HOME/.bash_aliases ]; then
   . $HOME/.bash_aliases

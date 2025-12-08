@@ -5,8 +5,8 @@ Personal bash dotfiles for Linux. Symlinked to `$HOME`.
 ## Quick Setup
 
 ```bash
-git clone git@github.com:loeffner/dotfiles.git ~/loesela_bash
-cd ~/loesela_bash
+git clone git@github.com:loeffner/dotfiles.git ~/dotfiles
+cd ~/dotfiles
 ./install.sh
 ```
 

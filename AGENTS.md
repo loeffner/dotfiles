@@ -1,6 +1,6 @@
 # Agent Instructions
 
-This repository contains dotfiles for a Linux bash environment. The files are designed to be symlinked from `~/loesela_bash/` to the home directory.
+This repository contains dotfiles for a Linux bash environment. The files are designed to be symlinked to the home directory. The repo can be cloned anywhere (e.g., `~/dotfiles`).
 
 ## Repository Structure
 
@@ -48,8 +48,6 @@ The script:
 git submodule update --init    # Initialize work submodule
 ./install.sh                   # Re-run to install work files
 ```
-
-The `install_loesela_bash` alias in `.bash_aliases` calls this script.
 
 ## Key Patterns
 

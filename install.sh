@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# install.sh - Install loesela_bash dotfiles
+# install.sh - Install dotfiles
 #
 # Creates symlinks from this repo to $HOME, backing up existing files.
 # Usage: ./install.sh [--force] [--no-backup]
@@ -63,7 +63,7 @@ while [[ $# -gt 0 ]]; do
       cat <<EOF
 Usage: $(basename "$0") [OPTIONS]
 
-Install loesela_bash dotfiles by creating symlinks to \$HOME.
+Install dotfiles by creating symlinks to \$HOME.
 
 Options:
   -f, --force     Overwrite existing files without prompting
@@ -205,7 +205,7 @@ copy_file() {
 # Main
 ###############################################################################
 
-echo "Installing loesela_bash dotfiles..."
+echo "Installing dotfiles..."
 echo "Source: $SCRIPT_DIR"
 echo
 
