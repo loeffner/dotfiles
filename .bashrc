@@ -39,7 +39,7 @@ shopt -s direxpand
 shopt -s globstar
 
 # make less more friendly for non-text input files, see lesspipe(1)
-[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+command -v lesspipe &>/dev/null && eval "$(SHELL=/bin/sh lesspipe)"
 
 # set variable identifying the chroot you work in (used in the prompt below)
 if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
@@ -50,11 +50,12 @@ fi
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
 # sources /etc/bash.bashrc).
 if ! shopt -oq posix; then
-  if [ -f /usr/share/bash-completion/bash_completion ]; then
-    . /usr/share/bash-completion/bash_completion
-  elif [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
-  fi
+  # NixOS: check multiple locations
+  for f in /run/current-system/sw/share/bash-completion/bash_completion \
+           /usr/share/bash-completion/bash_completion \
+           /etc/bash_completion; do
+    [ -f "$f" ] && . "$f" && break
+  done
 fi
 
 ###############################################################################
@@ -145,14 +146,18 @@ else
 fi
 
 export GPG_TTY=$(tty)
-gpgconf --launch gpg-agent
+# Launch GPG agent if available (NixOS manages this via programs.gnupg.agent)
+command -v gpgconf &>/dev/null && gpgconf --launch gpg-agent 2>/dev/null
 
 
 ###############################################################################
 # fuzzy-find
 ###############################################################################
 
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+# fzf integration (if installed)
+if command -v fzf &>/dev/null; then
+  [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+fi
 # export FZF_DEFAULT_COMMAND='find . --type f --strip-cwd-prefix --hidden --follow --exclude .git'
 # export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
@@ -174,4 +179,6 @@ if ! command -v add_path_entry &> /dev/null && [[ -n "$DOTFILES_DIR" ]]; then
 fi
 
 add_path_entry "$HOME"/.local/bin
-eval "$(zoxide init --cmd cd bash)"
+
+# zoxide - smarter cd (if installed)
+command -v zoxide &>/dev/null && eval "$(zoxide init --cmd cd bash)"

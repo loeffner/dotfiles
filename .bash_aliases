@@ -15,7 +15,8 @@ alias la='ls -A'
 alias l='ls -CF'
 
 # Enable color support of ls and also add handy aliases.
-if [ -x /usr/bin/dircolors ]; then
+# Works on both NixOS and traditional distros
+if command -v dircolors &>/dev/null; then
   test -r "$HOME"/.dircolors && eval "$(dircolors -b "$HOME"/.dircolors)" || eval "$(dircolors -b)"
   alias ls='ls --color=auto'
   # alias dir='dir --color=auto'
@@ -180,7 +181,7 @@ SSH_ENV="$HOME/.env/agent-environment-$HOSTNAME"
 # Start an ssh-agent and record the environment to a file
 start_agent() {
   log_info "Starting ssh-agent..."
-  /usr/bin/ssh-agent -t 8h >"${SSH_ENV}"
+  ssh-agent -t 8h >"${SSH_ENV}"
   chmod 600 "${SSH_ENV}"
   . "${SSH_ENV}" >/dev/null
 }
