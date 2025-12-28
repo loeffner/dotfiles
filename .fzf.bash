@@ -1,7 +1,10 @@
 # Setup fzf
 # ---------
-if [[ ! "$PATH" == */home/loesela/proj/fzf/bin* ]]; then
-  PATH="${PATH:+${PATH}:}$HOME/proj/fzf/bin"
+fzf_bin="$HOME/proj/fzf/bin"
+
+if [[ ":$PATH:" != *":$fzf_bin:"* ]]; then
+  PATH="$fzf_bin:$PATH"
 fi
 
-eval "$(fzf --bash)"
+# Load fzf shell integration
+source <(fzf --bash)
