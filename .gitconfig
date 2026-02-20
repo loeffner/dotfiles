@@ -26,6 +26,18 @@
 	lg = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' -n 10
 	lga = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all
 
+	# Changes
+	changed = diff --name-only  master... 
+
+	# Fuzzy switch
+	fzfswitch = "!git switch \"$(git for-each-ref --format='%(refname:short)' refs/heads | fzf --preview 'git lg --color=always {} | head -50')\""
+
+	# Open files
+	fzffile = "!f() { \
+		    f=$(git ls-files | fzf --preview 'highlight -O ansi {} | head -50'); \
+		    [ -n \"$f\" ] && ${EDITOR:-vim} \"$f\"; \
+		}; f"
+
 	# Commit
 	fix = commit --fixup
 
