@@ -31,5 +31,27 @@ log_error() {
 
 # Add a directory to PATH if not already present
 add_path_entry() {
-  [[ ":$PATH:" != *":$1:"* ]] && export PATH="$1:$PATH"
+  local var=PATH entry=$1
+
+  [ -n "$var" ]   || { echo "Error: no variable name specified"; return 1; }
+  [ -n "$entry" ] || { echo "Error: no entry specified"; return 1; }
+
+  # Canonicalize path and strip trailing slash
+  entry=$(readlink -f -- "$entry") || return 1
+  entry=${entry%/}
+
+  # Indirect expansion of the variable
+  local current=${!var}
+
+  # Check for exact match in colon-separated list
+  case ":$current:" in
+    *":$entry:"*) return 0 ;;  # already present
+  esac
+
+  # Prepend entry
+  if [ -n "$current" ]; then
+    export "$var=$entry:$current"
+  else
+    export "$var=$entry"
+  fi
 }
